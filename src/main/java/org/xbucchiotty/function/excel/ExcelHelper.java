@@ -1,7 +1,6 @@
 package org.xbucchiotty.function.excel;
 
 import org.xbucchiotty.excel.Sheet;
-import org.xbucchiotty.function.Converter;
 import org.xbucchiotty.function.Reducer;
 
 import static org.xbucchiotty.excel.Sheet.setCellValue;
@@ -23,15 +22,5 @@ public abstract class ExcelHelper {
             }
         };
     }
-
-    public static <T> Converter<Column<T, ?>, ExcelWrapperForColumn<T>> wrapColumnForExcel() {
-        return new Converter<Column<T, ?>, ExcelWrapperForColumn<T>>() {
-            @Override
-            public ExcelWrapperForColumn<T> convert(Column<T, ?> input) {
-                return new ExcelWrapperForColumn<T>(input);
-            }
-        };
-    }
-
 
 }

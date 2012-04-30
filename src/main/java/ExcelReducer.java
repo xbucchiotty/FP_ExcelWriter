@@ -33,7 +33,7 @@ public class ExcelReducer {
         int col = 0;
         setCellValue(sheet, row++, col, "TITRE GROUPE");
 
-        ExcelAgregeur<Chose> excelWriter = ExcelAgregeur.getInstance(columns, sheet, row++, 0);
+        ExcelAgregeur<Chose> excelWriter = new ExcelAgregeur<Chose>(columns, sheet, row++, 0);
         excelWriter.agrege(choses);
 
         for (Chose chose : choses) {

@@ -15,12 +15,12 @@ import static org.xbucchiotty.function.FunctionHelper.reduce;
  */
 public class ExcelAgregeur<T> {
 
-    private final Collection<ExcelWrapperForColumn<T>> columns;
+    private final List<Column<T, ?>> columns;
     private Sheet sheet;
     private int row;
     private int column;
 
-    private ExcelAgregeur(Collection<ExcelWrapperForColumn<T>> columns, Sheet sheet, int initialRow, int initialColumn) {
+    public ExcelAgregeur(List<Column<T, ?>> columns, Sheet sheet, int initialRow, int initialColumn) {
         this.columns = columns;
         this.sheet = sheet;
         this.row = initialRow;
@@ -45,9 +45,4 @@ public class ExcelAgregeur<T> {
         return column;
     }
 
-    public static <T> ExcelAgregeur<T> getInstance(List<Column<T, ?>> columns, Sheet sheet, int initialRow, int initialColumn) {
-        return new ExcelAgregeur<T>(
-                map(ExcelHelper.<T>wrapColumnForExcel(), columns),
-                sheet, initialRow, initialColumn);
-    }
 }

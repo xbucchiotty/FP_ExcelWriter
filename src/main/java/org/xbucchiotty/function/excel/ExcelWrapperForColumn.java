@@ -7,18 +7,22 @@ import org.xbucchiotty.function.Converter;
  * Date: 30/04/12
  * Time: 08:28
  */
-public class ExcelWrapperForColumn<I> {
-    private final Column<I, ?> column;
+public class ExcelWrapperForColumn {
 
-    public ExcelWrapperForColumn(Column<I, ?> column) {
-        this.column = column;
+    public static <T> Converter<Column<T, ?>, String> extractTitle() {
+        return new Converter<Column<T, ?>, String>() {
+            @Override
+            public String convert(Column<T, ?> input) {
+                return input.getTitle();
+            }
+        };
     }
 
-    public static <T> Converter<ExcelWrapperForColumn<T>, String> extractTitle() {
-        return new Converter<ExcelWrapperForColumn<T>, String>() {
+    public static <T> Converter<T, Object> extractData(final Column<T, ?> column) {
+        return new Converter<T, Object>() {
             @Override
-            public String convert(ExcelWrapperForColumn<T> input) {
-                return input.column.getTitle();
+            public Object convert(T input) {
+                return column.extractData(input);
             }
         };
     }
