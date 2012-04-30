@@ -1,8 +1,7 @@
 import org.junit.Test;
 import org.xbucchiotty.excel.Sheet;
 import org.xbucchiotty.function.excel.Column;
-import org.xbucchiotty.function.excel.ExcelHelper;
-import org.xbucchiotty.function.excel.ExcelWrapperForColumn;
+import org.xbucchiotty.function.excel.ExcelAgregeur;
 
 import java.util.Collection;
 import java.util.Date;
@@ -11,8 +10,6 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
 import static org.xbucchiotty.excel.Sheet.setCellValue;
-import static org.xbucchiotty.function.FunctionHelper.map;
-import static org.xbucchiotty.function.FunctionHelper.reduce;
 
 /**
  * User: xbucchiotty
@@ -36,9 +33,8 @@ public class ExcelReducer {
         int col = 0;
         setCellValue(sheet, row++, col, "TITRE GROUPE");
 
-        Collection<ExcelWrapperForColumn<Chose>> excelWrapperForColumns = map(ExcelHelper.<Chose>wrapColumnForExcel(), columns);
-        Collection<String> titles = map(ExcelWrapperForColumn.<Chose>extractTitle(), excelWrapperForColumns);
-        reduce(ExcelHelper.writeToExcelLine(sheet, row++, 0), titles);
+        ExcelAgregeur<Chose> excelWriter = ExcelAgregeur.getInstance(columns, sheet, row++, 0);
+        excelWriter.agrege(choses);
 
         for (Chose chose : choses) {
             col = 0;
