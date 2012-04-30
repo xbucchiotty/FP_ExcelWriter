@@ -13,7 +13,7 @@ import static org.xbucchiotty.function.FunctionHelper.reduce;
  * Date: 30/04/12
  * Time: 08:43
  */
-public class ExcelColumnAgregeur<T> implements Reducer<Column<T, ?>> {
+public class ExcelColumnAgregeur<T> implements Reducer<Column<T, ?>, Integer> {
 
     private Sheet sheet;
     private final Collection<T> beans;
@@ -27,13 +27,9 @@ public class ExcelColumnAgregeur<T> implements Reducer<Column<T, ?>> {
         this.column = initialColumn;
     }
 
-    public void agrege(Collection<Column<T, ?>> columns) {
-        reduce(this, columns);
-    }
-
     @Override
     public void agrege(Column<T, ?> input) {
-        Reducer<Object> writer = ExcelHelper.writeObjectToExcelByRow(sheet, initialRow, column++);
+        Reducer<Object, Integer> writer = ExcelHelper.writeObjectToExcelByRow(sheet, initialRow, column++);
 
         reduce(
                 writer,
@@ -50,4 +46,8 @@ public class ExcelColumnAgregeur<T> implements Reducer<Column<T, ?>> {
 
     }
 
+    @Override
+    public Integer getResult() {
+        return column;
+    }
 }

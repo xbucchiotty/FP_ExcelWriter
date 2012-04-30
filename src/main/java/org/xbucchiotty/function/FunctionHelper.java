@@ -11,20 +11,20 @@ import java.util.Collection;
 public abstract class FunctionHelper {
 
 
-    public static <I> Reducer<I> reduce(Reducer<I> reducer, Collection<I> inputs) {
+    public static <I, O> O reduce(Reducer<I, O> reducer, Collection<I> inputs) {
         for (I input : inputs) {
             reducer.agrege(input);
         }
 
-        return reducer;
+        return reducer.getResult();
     }
 
-    public static <I> Reducer<I> reduce(Reducer<I> reducer, I... inputs) {
+    public static <I, O> O reduce(Reducer<I, O> reducer, I... inputs) {
         for (I input : inputs) {
             reducer.agrege(input);
         }
 
-        return reducer;
+        return reducer.getResult();
     }
 
     public static <I, O> Collection<O> map(Converter<I, O> converter, Collection<I> inputs) {

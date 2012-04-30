@@ -16,24 +16,13 @@ public abstract class ExcelHelper {
 
     public static final String BLANK = "";
 
-    public static Reducer<String> writeTitleToExcelByColumn(final Sheet sheet, final int row, final int firstColumn) {
-        return new Reducer<String>() {
-            int col = firstColumn;
-
-            @Override
-            public void agrege(String input) {
-                setCellValue(sheet, row, col++, input);
-            }
-        };
-    }
-
-    public static Reducer<Object> writeObjectToExcelByRow(final Sheet sheet, final int firstRow, final int column) {
-        return new Reducer<Object>() {
+    public static Reducer<Object, Integer> writeObjectToExcelByRow(final Sheet sheet, final int firstRow, final int column) {
+        return new Reducer<Object, Integer>() {
             int row = firstRow;
 
             @Override
             public void agrege(Object input) {
-                if(input == null){
+                if (input == null) {
                     setCellValue(sheet, row++, column, BLANK);
                 }
                 if (input instanceof Date) {
@@ -43,6 +32,11 @@ public abstract class ExcelHelper {
                 } else if (input instanceof String) {
                     setCellValue(sheet, row++, column, input.toString());
                 }
+            }
+
+            @Override
+            public Integer getResult() {
+                return row;
             }
         };
     }

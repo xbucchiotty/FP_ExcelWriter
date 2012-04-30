@@ -4,50 +4,59 @@ import org.xbucchiotty.excel.Sheet;
 import org.xbucchiotty.function.Reducer;
 
 import java.util.Collection;
-import java.util.List;
 
-import static org.xbucchiotty.function.FunctionHelper.map;
 import static org.xbucchiotty.function.FunctionHelper.reduce;
-import static org.xbucchiotty.function.excel.ExcelHelper.writeTitleToExcelByColumn;
+import static org.xbucchiotty.function.excel.ExcelHelper.writeObjectToExcelByRow;
 
 /**
  * User: xbucchiotty
  * Date: 30/04/12
  * Time: 12:40
  */
-public class ExcelColumnGroupAgregeur<T> implements Reducer<T> {
+public class ExcelColumnGroupAgregeur<T> implements Reducer<ColumnGroup<T>, Integer> {
 
-    private final List<ColumnGroup<T>> columnGroups;
+    private final Collection<T> beans;
     private Sheet sheet;
     private int column;
     private final int initialRow;
 
-    public ExcelColumnGroupAgregeur(List<ColumnGroup<T>> columnGroups, Sheet sheet, int initialRow, int initialColumn) {
-        this.columnGroups = columnGroups;
+    public ExcelColumnGroupAgregeur(Collection<T> beans, Sheet sheet, int initialRow, int initialColumn) {
+        this.beans = beans;
         this.sheet = sheet;
         this.column = initialColumn;
         this.initialRow = initialRow;
     }
 
     @Override
-    public void agrege(T bean) {
+    public void agrege(ColumnGroup<T> group) {
         //ECRITURE DES TITRES
-        writeTitle();
-
-
-    }
-
-    public void agrege(Collection<T> beans) {
-        reduce(this, beans);
-    }
-
-    private void writeTitle() {
-        reduce(
-                writeTitleToExcelByColumn(sheet, initialRow, column++),
-                map(
-                        ExcelWrapperForColumnGroup.<T>extractTitle(),
-                        columnGroups
-                )
+        int rowIndex = reduce(
+                writeObjectToExcelByRow(sheet, initialRow, column),
+                group.getTitle()
         );
+
+        this.column = reduce(
+                writeColumnToExcel(rowIndex),
+                group.getColumns()
+        );
+
+    }
+
+    private ExcelColumnAgregeur<T> writeColumnToExcel(int rowIndex) {
+        return new ExcelColumnAgregeur<T>(
+                beans,
+                sheet,
+                rowIndex,
+                column
+        );
+    }
+
+    public void agrege(Collection<ColumnGroup<T>> groups) {
+        reduce(this, groups);
+    }
+
+    @Override
+    public Integer getResult() {
+        return column;
     }
 }

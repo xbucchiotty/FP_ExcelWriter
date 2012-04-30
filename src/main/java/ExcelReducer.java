@@ -1,8 +1,7 @@
 import org.junit.Test;
 import org.xbucchiotty.excel.Sheet;
-import org.xbucchiotty.function.excel.Column;
 import org.xbucchiotty.function.excel.ColumnGroup;
-import org.xbucchiotty.function.excel.ExcelColumnAgregeur;
+import org.xbucchiotty.function.excel.ExcelColumnGroupAgregeur;
 
 import java.util.Collection;
 import java.util.Date;
@@ -10,7 +9,6 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.fest.assertions.Assertions.assertThat;
-import static org.xbucchiotty.excel.Sheet.setCellValue;
 
 /**
  * User: xbucchiotty
@@ -19,81 +17,49 @@ import static org.xbucchiotty.excel.Sheet.setCellValue;
  */
 public class ExcelReducer {
 
-    private static final int INTIAL_ROW = 0;
+    private static final int INITIAL_ROW = 0;
     private static final int INITIAL_COLUMN = 0;
 
     @Test
-    public void testRefactor() {
-        Sheet sheet = extract();
+    public void testRefactorOneGroup() {
+        Sheet sheet = new Sheet();
+        Collection<Chose> choses = getData();
+
+        new ExcelColumnGroupAgregeur<Chose>(choses, sheet, INITIAL_ROW, INITIAL_COLUMN).
+                agrege(
+                        firstGroup()
+                )
+        ;
 
         assertThat(sheet.getRender()).isEqualTo("TITRE GROUPE\nDate;Double\n01/02/1904;12.0\n01/02/1905;124.0");
     }
 
-    private Sheet extract() {
+    @Test
+    public void testRefactorTwoGroups() {
         Sheet sheet = new Sheet();
         Collection<Chose> choses = getData();
 
-        int row = INTIAL_ROW;
+        new ExcelColumnGroupAgregeur<Chose>(choses, sheet, INITIAL_ROW, INITIAL_COLUMN).
+                agrege(
+                        asList(
+                                firstGroup(),
+                                secondGroup()
+                        )
+                );
 
-        setCellValue(sheet, row++, INITIAL_COLUMN, "TITRE GROUPE");
-
-        new ExcelColumnAgregeur<Chose>(
-                choses,
-                sheet,
-                row,
-                INITIAL_COLUMN
-        ).agrege(getColumnGroup().getColumns());
-
-        return sheet;
+        assertThat(sheet.getRender()).isEqualTo("TITRE GROUPE;SECOND_GROUP\nDate;Double;PROP3\n01/02/1904;12.0;Test 1\n01/02/1905;124.0;Test3");
     }
 
     private List<Chose> getData() {
-        return asList(new Chose(new Date(4, 1, 1, 1, 1, 1), 12d), new Chose(new Date(5, 1, 1, 1, 1, 1), 124d));
+        return asList(new Chose(new Date(4, 1, 1, 1, 1, 1), 12d, "Test 1"), new Chose(new Date(5, 1, 1, 1, 1, 1), 124d, "Test3"));
     }
 
-    private ColumnGroup<Chose> getColumnGroup() {
-        return new ColumnGroup<Chose>() {
-            @Override
-            public String getTitle() {
-                return "TITRE GROUPE";
-            }
+    private static ColumnGroup<Chose> firstGroup() {
+        return new FirstColumnGroup();
+    }
 
-            @Override
-            public List<Column<Chose, ?>> getColumns() {
-                return asList((Column<Chose, ?>)
-                        date(),
-                        aDouble()
-                );
-            }
-
-            private Column<Chose, Date> date() {
-                return new Column<Chose, Date>() {
-                    @Override
-                    public String getTitle() {
-                        return "Date";
-                    }
-
-                    @Override
-                    public Date extractData(Chose input) {
-                        return input.getProp1();
-                    }
-                };
-            }
-
-            private Column<Chose, Double> aDouble() {
-                return new Column<Chose, Double>() {
-                    @Override
-                    public String getTitle() {
-                        return "Double";
-                    }
-
-                    @Override
-                    public Double extractData(Chose input) {
-                        return input.getProp2();
-                    }
-                };
-            }
-        };
+    private static ColumnGroup<Chose> secondGroup() {
+        return new SecondColumnGroup();
     }
 
 
