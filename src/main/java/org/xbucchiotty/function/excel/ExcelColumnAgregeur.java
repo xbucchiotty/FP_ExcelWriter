@@ -31,20 +31,22 @@ public class ExcelColumnAgregeur<T> implements Reducer<Column<T, ?>, Integer> {
     public void agrege(Column<T, ?> input) {
         Reducer<Object, Integer> writer = ExcelHelper.writeObjectToExcelByRow(sheet, initialRow, column++);
 
-        reduce(
-                writer,
-                input.getTitle()
-        );
+        if (input.isVisible()) {
+            reduce(
+                    writer,
+                    input.getTitle()
+            );
 
-        reduce(
-                writer,
-                map(
-                        ExcelWrapperForColumn.<T>extractData(input),
-                        beans
-                )
-        );
-
+            reduce(
+                    writer,
+                    map(
+                            ExcelWrapperForColumn.<T>extractData(input),
+                            beans
+                    )
+            );
+        }
     }
+
 
     @Override
     public Integer getResult() {

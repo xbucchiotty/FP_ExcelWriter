@@ -10,6 +10,8 @@ import java.util.List;
  * Time: 14:04
  */
 public class SecondColumnGroup implements ColumnGroup<Chose> {
+
+
     @Override
     public String getTitle() {
         return "SECOND_GROUP";
@@ -33,6 +35,11 @@ public class SecondColumnGroup implements ColumnGroup<Chose> {
             @Override
             public String extractData(Chose input) {
                 return input.getProp3();
+            }
+
+            @Override
+            public boolean isVisible() {
+                return true;
             }
         };
     }

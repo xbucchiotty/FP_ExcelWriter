@@ -7,11 +7,20 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 /**
-* User: xbucchiotty
-* Date: 30/04/12
-* Time: 14:03
-*/
+ * User: xbucchiotty
+ * Date: 30/04/12
+ * Time: 14:03
+ */
 public class FirstColumnGroup implements ColumnGroup<Chose> {
+    public static final boolean VISIBLE = true;
+    public static final boolean HIDDEN = false;
+
+    private final boolean prop2Visible;
+
+    public FirstColumnGroup(boolean prop2Visible) {
+        this.prop2Visible = prop2Visible;
+    }
+
     @Override
     public String getTitle() {
         return "TITRE GROUPE";
@@ -36,6 +45,11 @@ public class FirstColumnGroup implements ColumnGroup<Chose> {
             public Date extractData(Chose input) {
                 return input.getProp1();
             }
+
+            @Override
+            public boolean isVisible() {
+                return true;
+            }
         };
     }
 
@@ -49,6 +63,11 @@ public class FirstColumnGroup implements ColumnGroup<Chose> {
             @Override
             public Double extractData(Chose input) {
                 return input.getProp2();
+            }
+
+            @Override
+            public boolean isVisible() {
+                return prop2Visible;
             }
         };
     }

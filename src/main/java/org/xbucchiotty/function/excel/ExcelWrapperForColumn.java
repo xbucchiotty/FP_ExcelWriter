@@ -13,7 +13,7 @@ public class ExcelWrapperForColumn {
         return new Converter<T, Object>() {
             @Override
             public Object convert(T input) {
-                return column.extractData(input);
+                return column.isVisible() ? column.extractData(input) : null;
             }
         };
     }
