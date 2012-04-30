@@ -18,32 +18,34 @@ import static org.xbucchiotty.excel.Sheet.setCellValue;
  */
 public class ExcelReducer {
 
+    private final List<Column<Chose, ?>> columns = asList((Column<Chose, ?>)
+            date(),
+            aDouble()
+    );
+    private static final int INTIAL_ROW = 0;
+    private static final int INITIAL_COLUMN = 0;
+
     @Test
     public void testRefactor() {
-        Sheet sheet = new Sheet();
-
-        Collection<Chose> choses = asList(new Chose(new Date(4, 1, 1, 1, 1, 1), 12d), new Chose(new Date(5, 1, 1, 1, 1, 1), 124d));
-
-        List<Column<Chose, ?>> columns = asList((Column<Chose, ?>)
-                date(),
-                aDouble()
-        );
-
-        int row = 0;
-        int col = 0;
-        setCellValue(sheet, row++, col, "TITRE GROUPE");
-
-        ExcelAgregeur<Chose> excelWriter = new ExcelAgregeur<Chose>(columns, sheet, row++, 0);
-        excelWriter.agrege(choses);
-
-        for (Chose chose : choses) {
-            col = 0;
-            setCellValue(sheet, row, col++, chose.getProp1());
-            setCellValue(sheet, row, col, chose.getProp2());
-            row++;
-        }
+        Sheet sheet = extract();
 
         assertThat(sheet.getRender()).isEqualTo("TITRE GROUPE\nDate;Double\n01/02/1904;12.0\n01/02/1905;124.0");
+    }
+
+    private Sheet extract() {
+        Sheet sheet = new Sheet();
+        Collection<Chose> choses = getData();
+
+        int row = INTIAL_ROW;
+
+        setCellValue(sheet, row++, INITIAL_COLUMN, "TITRE GROUPE");
+
+        new ExcelAgregeur<Chose>(columns, sheet, row, INITIAL_COLUMN).agrege(choses);
+        return sheet;
+    }
+
+    private List<Chose> getData() {
+        return asList(new Chose(new Date(4, 1, 1, 1, 1, 1), 12d), new Chose(new Date(5, 1, 1, 1, 1, 1), 124d));
     }
 
     private Column<Chose, Date> date() {

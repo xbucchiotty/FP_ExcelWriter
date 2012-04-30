@@ -10,7 +10,7 @@ import java.util.*;
  */
 public class Sheet {
 
-    Map<Key, Object> cells = new LinkedHashMap<Key, Object>();
+    Map<Key, Object> cells = new TreeMap<Key, Object>();
 
     public static void setCellValue(Sheet sheet, int row, int column, Date value) {
         sheet.cells.put(Key.getKey(row, column), new SimpleDateFormat("dd/MM/yyyy").format(value));
@@ -71,6 +71,14 @@ public class Sheet {
             int result = x;
             result = 31 * result + y;
             return result;
+        }
+
+        @Override
+        public String toString() {
+            return "Key{" +
+                    "x=" + x +
+                    ", y=" + y +
+                    '}';
         }
 
         @Override
