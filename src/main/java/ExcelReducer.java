@@ -1,7 +1,8 @@
 import org.junit.Test;
 import org.xbucchiotty.excel.Sheet;
 import org.xbucchiotty.function.excel.Column;
-import org.xbucchiotty.function.excel.ExcelAgregeur;
+import org.xbucchiotty.function.excel.ColumnGroup;
+import org.xbucchiotty.function.excel.ExcelColumnAgregeur;
 
 import java.util.Collection;
 import java.util.Date;
@@ -18,10 +19,6 @@ import static org.xbucchiotty.excel.Sheet.setCellValue;
  */
 public class ExcelReducer {
 
-    private final List<Column<Chose, ?>> columns = asList((Column<Chose, ?>)
-            date(),
-            aDouble()
-    );
     private static final int INTIAL_ROW = 0;
     private static final int INITIAL_COLUMN = 0;
 
@@ -40,7 +37,13 @@ public class ExcelReducer {
 
         setCellValue(sheet, row++, INITIAL_COLUMN, "TITRE GROUPE");
 
-        new ExcelAgregeur<Chose>(columns, sheet, row, INITIAL_COLUMN).agrege(choses);
+        new ExcelColumnAgregeur<Chose>(
+                choses,
+                sheet,
+                row,
+                INITIAL_COLUMN
+        ).agrege(getColumnGroup().getColumns());
+
         return sheet;
     }
 
@@ -48,31 +51,50 @@ public class ExcelReducer {
         return asList(new Chose(new Date(4, 1, 1, 1, 1, 1), 12d), new Chose(new Date(5, 1, 1, 1, 1, 1), 124d));
     }
 
-    private Column<Chose, Date> date() {
-        return new Column<Chose, Date>() {
+    private ColumnGroup<Chose> getColumnGroup() {
+        return new ColumnGroup<Chose>() {
             @Override
             public String getTitle() {
-                return "Date";
+                return "TITRE GROUPE";
             }
 
             @Override
-            public Date extractData(Chose input) {
-                return input.getProp1();
+            public List<Column<Chose, ?>> getColumns() {
+                return asList((Column<Chose, ?>)
+                        date(),
+                        aDouble()
+                );
+            }
+
+            private Column<Chose, Date> date() {
+                return new Column<Chose, Date>() {
+                    @Override
+                    public String getTitle() {
+                        return "Date";
+                    }
+
+                    @Override
+                    public Date extractData(Chose input) {
+                        return input.getProp1();
+                    }
+                };
+            }
+
+            private Column<Chose, Double> aDouble() {
+                return new Column<Chose, Double>() {
+                    @Override
+                    public String getTitle() {
+                        return "Double";
+                    }
+
+                    @Override
+                    public Double extractData(Chose input) {
+                        return input.getProp2();
+                    }
+                };
             }
         };
     }
 
-    private Column<Chose, Double> aDouble() {
-        return new Column<Chose, Double>() {
-            @Override
-            public String getTitle() {
-                return "Double";
-            }
 
-            @Override
-            public Double extractData(Chose input) {
-                return input.getProp2();
-            }
-        };
-    }
 }

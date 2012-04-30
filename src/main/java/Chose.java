@@ -20,15 +20,8 @@ public class Chose {
         return prop1;
     }
 
-    public void setProp1(Date prop1) {
-        this.prop1 = prop1;
-    }
-
     public Double getProp2() {
         return prop2;
     }
 
-    public void setProp2(Double prop2) {
-        this.prop2 = prop2;
-    }
 }

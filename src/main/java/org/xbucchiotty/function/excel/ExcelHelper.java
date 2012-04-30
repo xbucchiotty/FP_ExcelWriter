@@ -16,7 +16,7 @@ public abstract class ExcelHelper {
 
     public static final String BLANK = "";
 
-    public static Reducer<String> writeTitleToExcelLine(final Sheet sheet, final int row, final int firstColumn) {
+    public static Reducer<String> writeTitleToExcelByColumn(final Sheet sheet, final int row, final int firstColumn) {
         return new Reducer<String>() {
             int col = firstColumn;
 
@@ -27,7 +27,7 @@ public abstract class ExcelHelper {
         };
     }
 
-    public static Reducer<Object> writeObjectToExcelColumn(final Sheet sheet, final int firstRow, final int column) {
+    public static Reducer<Object> writeObjectToExcelByRow(final Sheet sheet, final int firstRow, final int column) {
         return new Reducer<Object>() {
             int row = firstRow;
 

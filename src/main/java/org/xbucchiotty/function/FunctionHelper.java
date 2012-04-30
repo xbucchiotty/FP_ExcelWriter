@@ -19,6 +19,14 @@ public abstract class FunctionHelper {
         return reducer;
     }
 
+    public static <I> Reducer<I> reduce(Reducer<I> reducer, I... inputs) {
+        for (I input : inputs) {
+            reducer.agrege(input);
+        }
+
+        return reducer;
+    }
+
     public static <I, O> Collection<O> map(Converter<I, O> converter, Collection<I> inputs) {
         Collection<O> convertedObjects = new ArrayList<O>(inputs.size());
         for (I input : inputs) {
