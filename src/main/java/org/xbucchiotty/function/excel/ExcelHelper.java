@@ -13,7 +13,6 @@ import static org.xbucchiotty.excel.Sheet.setCellValue;
  */
 public abstract class ExcelHelper {
 
-
     public static Reducer<String> writeToExcelLine(final Sheet sheet, final int row, final int firstColumn) {
         return new Reducer<String>() {
             int col = firstColumn;
@@ -25,12 +24,14 @@ public abstract class ExcelHelper {
         };
     }
 
-    public static <T> Converter<Column<T,?>, String> extractTitle() {
-        return new Converter<Column<T,?>, String>() {
+    public static <T> Converter<Column<T, ?>, ExcelWrapperForColumn<T>> wrapColumnForExcel() {
+        return new Converter<Column<T, ?>, ExcelWrapperForColumn<T>>() {
             @Override
-            public String convert(Column<T,?> input) {
-                return input.getTitle();
+            public ExcelWrapperForColumn<T> convert(Column<T, ?> input) {
+                return new ExcelWrapperForColumn<T>(input);
             }
         };
     }
+
+
 }
